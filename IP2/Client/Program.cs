@@ -1,15 +1,19 @@
-﻿using System;
+﻿using Client.GUI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-namespace Application
+namespace Client
 {
-    class Program
+    static class Program
     {
-
-        public static void Main(String[] args)
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
