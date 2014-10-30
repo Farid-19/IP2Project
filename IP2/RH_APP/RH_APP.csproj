@@ -59,6 +59,7 @@
     <Compile Include="Classes\TXT_Bike.cs" />
     <Compile Include="Controller\RH_Controller.cs" />
     <Compile Include="Controller\Specialist_Controller.cs" />
+    <Compile Include="Controller\ÄstrandTestController.cs" />
     <Compile Include="GUI\BikeUI.cs">
       <SubType>Form</SubType>
     </Compile>
