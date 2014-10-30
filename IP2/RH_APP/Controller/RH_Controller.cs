@@ -58,9 +58,20 @@ namespace RH_APP.Controller
 
         public void SetPower(int power)
         {
-            _queue.Enqueue(String.Format("PW {0}", power));
+            SendCommand(String.Format("PW {0}", power));
         }
 
+        public void Reset()
+        {
+            SendCommand(String.Format("RS"));
+        }
+
+        public void SendCommand(string cmd)
+        {
+            _queue.Enqueue(cmd);
+            Console.WriteLine("Send following command to the bike: " + cmd);
+        }
+        
         public event EventHandler UpdatedList;
 
         private void OnUpdatedList(MeasurementEventArgs e)
@@ -94,24 +105,13 @@ namespace RH_APP.Controller
 
         private void SendToServer(object sender, EventArgs args)
         {
-            //var jsonObject = new JObject(
-            //        new JProperty("CMD", "push"),
-            //        new JProperty("count", 1),
-            //        new JProperty("measurements", 
-            //                new JArray(
-            //                    JObject.FromObject(LatestMeasurement)
-            //                )
-            //            )
-                //);
+
 
             var jsonObject = new PushPacket<Measurement>(PushPacket<Measurement>.DataType.Measurements,
                 new List<Measurement>() { LatestMeasurement },
                 Settings.GetInstance().authToken
                 );
 
-            //Johan's code line
-            // ReSharper disable once SpecifyACultureInStringConversionExplicitly
-            //json = json.Length.ToString().PadRight(4, ' ') + json;
             TCPController.Send(jsonObject.ToString());
         }
 

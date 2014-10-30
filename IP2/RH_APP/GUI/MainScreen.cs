@@ -20,6 +20,7 @@ namespace RH_APP.GUI
     {
         private Chat_Controller _chatController;
         private Specialist_Controller _spController;
+        private ÄstrandTestController testController;
         private RH_Controller _controller; 
         private bool _inTraining = false;
         private bool isSpecialist;
@@ -44,7 +45,7 @@ namespace RH_APP.GUI
                 _quitButton.Visible = false;
             }
 
-
+            
             // updateGraph();
         }
 
@@ -73,6 +74,8 @@ namespace RH_APP.GUI
 
                 _controller = new RH_Controller(new STUB_Bike(), true);
                 _controller.UpdatedList += UpdateGUI;
+                testController = new ÄstrandTestController(_controller, Settings.GetInstance().CurrentUser);
+                testController.Start();
             }
             startTrainingButton.Enabled = false;
             _quitButton.Enabled = true;
@@ -342,7 +345,7 @@ namespace RH_APP.GUI
                 //var protoLine = _controller.LatestMeasurement.toProtocolString();
                 //_writer.WriteLine(protoLine);
      
-
+            testController.CheckConditions(eventargs.Measurement);
         }
             public void updateGraph(MeasurementEventArgs args)
             {
