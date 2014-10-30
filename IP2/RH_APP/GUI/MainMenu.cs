@@ -54,6 +54,7 @@ namespace RH_APP.GUI
         private void startButton_Click(object sender, EventArgs e)
         {
             TrainingScreen s = new TrainingScreen(false);
+            s.Show();
         }
     }
 }

@@ -25,7 +25,7 @@ namespace RH_APP.GUI
         private bool isSpecialist;
         private User client;
         private int currentTraingId = -1;
-
+        private ÄstrandTestController testController;
         public TrainingScreen(Boolean showSpecialistItems)
         {
 
@@ -72,6 +72,9 @@ namespace RH_APP.GUI
 
                 //_controller = new RH_Controller(new STUB_Bike(), true);
                 _controller.UpdatedList += UpdateGUI;
+
+                testController = new ÄstrandTestController(_controller, Settings.GetInstance().CurrentUser);
+                testController.Start();
             }
             startTrainingButton.Enabled = false;
             _quitButton.Enabled = true;
@@ -341,7 +344,7 @@ namespace RH_APP.GUI
             //var protoLine = _controller.LatestMeasurement.toProtocolString();
             //_writer.WriteLine(protoLine);
 
-
+            testController.CheckConditions(eventargs.Measurement);
         }
         public void updateGraph(MeasurementEventArgs args)
         {
