@@ -19,6 +19,9 @@ namespace RH_APP.Controller
         private int power;
         private bool started = false;
 
+        private int maxPulse;
+
+
         // timeToIncreasePower[x] = y
         // x = minuut
         // y = true / false 
@@ -68,6 +71,16 @@ namespace RH_APP.Controller
             power = client.Gender == "f" ? 25 : 50;
 
             controller.SetPower(power);
+
+
+            if (client.Gender == "f")
+            {
+                maxPulse = 200 - getAge();
+            }
+            else
+            {
+                maxPulse = 220 - getAge();
+            }
         }
 
         public void End()
@@ -136,5 +149,18 @@ namespace RH_APP.Controller
             }
         }
 
+
+        public int getAge()
+        {
+            DateTime today = DateTime.Today;
+            int age = today.Year - client.DateOfBirth.Year;
+
+            if (client.DateOfBirth > today.AddYears(-age))
+            {
+                age--;
+            }
+
+            return age;
+        }
     }
 }
