@@ -14,9 +14,21 @@ namespace RH_APP.GUI
 {
     public partial class MainMenu : Form
     {
-        public MainMenu()
+        private bool IsSpecialist;
+        public MainMenu(bool isSpecialist)
         {
+            IsSpecialist = isSpecialist;
             InitializeComponent();
+            if (!isSpecialist)
+            {
+                createUserButton.Enabled = false;
+                createConnectionBbutton.Enabled = false;
+            }
+            else
+            {
+                startButton.Enabled = false;
+                startButton.Enabled = false;
+            }
             User s = Settings.GetInstance().CurrentUser;
             welcomeLabel.Text = String.Format("Welcome {0}", s.Fullname);
         }
@@ -35,8 +47,13 @@ namespace RH_APP.GUI
 
         private void displayDataButton_Click(object sender, EventArgs e)
         {
-            SelectMeasurementScreen s = new SelectMeasurementScreen();
+            SelectMeasurementScreen s = new SelectMeasurementScreen(IsSpecialist);
             s.Show();
+        }
+
+        private void startButton_Click(object sender, EventArgs e)
+        {
+            TrainingScreen s = new TrainingScreen(false);
         }
     }
 }

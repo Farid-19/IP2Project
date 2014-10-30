@@ -298,7 +298,7 @@ namespace RH_APP.GUI
 
         private void loadClientsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var measurementScreen = new SelectMeasurementScreen();
+            var measurementScreen = new SelectMeasurementScreen(isSpecialist);
             measurementScreen.ShowDialog();
         }
 

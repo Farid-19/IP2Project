@@ -34,6 +34,7 @@
             this.welcomeLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.startButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // createConnectionBbutton
@@ -95,11 +96,22 @@
             this.label1.TabIndex = 7;
             this.label1.Text = "Medisch Centrum";
             // 
+            // startButton
+            // 
+            this.startButton.Location = new System.Drawing.Point(130, 122);
+            this.startButton.Name = "startButton";
+            this.startButton.Size = new System.Drawing.Size(110, 23);
+            this.startButton.TabIndex = 9;
+            this.startButton.Text = "Start training";
+            this.startButton.UseVisualStyleBackColor = true;
+            this.startButton.Click += new System.EventHandler(this.startButton_Click);
+            // 
             // MainMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(252, 187);
+            this.Controls.Add(this.startButton);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.welcomeLabel);
@@ -121,5 +133,6 @@
         private System.Windows.Forms.Label welcomeLabel;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button startButton;
     }
 }

@@ -21,9 +21,11 @@ namespace RH_APP.GUI
     public partial class SelectMeasurementScreen : Form
     {
         private List<SessionData> sessions;
-        private List<User> users; 
-        public SelectMeasurementScreen()
+        private List<User> users;
+        private bool IsSpecialist;
+        public SelectMeasurementScreen(bool isSpecialist)
         {
+            IsSpecialist = isSpecialist;
             InitializeComponent();
 
             TCPController.OnPacketReceived += handleIncomingPackets;
@@ -86,7 +88,12 @@ namespace RH_APP.GUI
             else if (p is PullUsersResponsePacket)
             {
                 var response = p as PullUsersResponsePacket;
-                users = response.List.Where(x => x.IsClient).ToList();
+                if (IsSpecialist)
+                    users = response.List.Where(x => x.IsClient).ToList();
+                else
+                {
+                    users = response.List.Where(x => x.IsClient && x.Id == Settings.GetInstance().CurrentUser.Id).ToList();
+                }
                 BindingSource bs = new BindingSource();
                 bs.DataSource = users;
                 usersCombobox.DataSource = bs;

@@ -65,17 +65,16 @@ namespace RH_APP.GUI
                     //mainScreen.ShowDialog();
 
                     this.Hide();
-                    MainMenu m = new MainMenu();
+                    MainMenu m = new MainMenu(resp.User.IsSpecialist || resp.User.IsAdministrator);
                     m.Show();
                 }
                 else if (resp.User.IsClient)
                 {
                         this.Hide();
-                        //var mainScreen = new MainScreen(false);
-                        var mainScreen = new TrainingScreen(false);
+
                         TCPController.OnPacketReceived -= LoginPacketResponse;
-                        mainScreen.Text = " Remote Healthcare - Client Edition";
-                        mainScreen.ShowDialog();
+                        MainMenu m = new MainMenu(false);
+                        m.Show();
 
                 }
             }
