@@ -29,9 +29,18 @@ namespace RH_APP.Controller
 
         public delegate void TrainingStateChanged(string state);
 
+        public delegate void RPMtoLow();
+
+        public delegate void RPMToHigh();
+
+        public event RPMToHigh OnRPMToHigh;
+
+        public event RPMtoLow OnRPMToLow;
+
         public event TrainingStateChanged OnTrainingStateChanged;
 
         public event TrainingFinished OnTrainingFinished;
+
 
 
         public enum TestPhases
