@@ -39,7 +39,7 @@ namespace RH_APP.GUI
                 numericUpDown1.Visible = false;
                 setPowerLabel.Visible = false;
                 broadcastCheckbox.Visible = false;
-                startTrainingButton.Visible = false;
+                //startTrainingButton.Visible = false;
                 _quitButton.Visible = false;
             }
 
@@ -74,6 +74,8 @@ namespace RH_APP.GUI
                 _controller.UpdatedList += UpdateGUI;
 
                 testController = new ÄstrandTestController(_controller, Settings.GetInstance().CurrentUser);
+                //testController.OnTrainingFinished 
+                testController.OnTrainingStateChanged += changeStateLabel; 
                 testController.Start();
             }
             startTrainingButton.Enabled = false;
@@ -112,6 +114,11 @@ namespace RH_APP.GUI
             _inTraining = false;
 
 
+        }
+
+        public void changeStateLabel(string s)
+        {
+            trainingStateLabel.Text = s;
         }
 
 
@@ -343,8 +350,8 @@ namespace RH_APP.GUI
             //if (!_writeToFile) return;
             //var protoLine = _controller.LatestMeasurement.toProtocolString();
             //_writer.WriteLine(protoLine);
-
-            testController.CheckConditions(eventargs.Measurement);
+            if(testController != null)
+                testController.CheckConditions(eventargs.Measurement);
         }
         public void updateGraph(MeasurementEventArgs args)
         {
@@ -390,6 +397,11 @@ namespace RH_APP.GUI
             }
             return null;
 
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            
         }
 
     }

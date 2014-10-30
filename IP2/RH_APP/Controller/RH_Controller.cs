@@ -45,6 +45,7 @@ namespace RH_APP.Controller
 
         public RH_Controller(IBike b, bool sendToServer = false)
         {
+            SendCommand(String.Format("CM"));
             _lastSuccesfullRead = DateTime.Now;
             //bike = new Classes.COM_Bike("COM3");
             //bike = new Classes.STUB_Bike();
@@ -53,11 +54,12 @@ namespace RH_APP.Controller
                 UpdatedList += SendToServer;
             InitializeBackgroundWorker();
             _bw.RunWorkerAsync();
-
+            
         }
 
         public void SetPower(int power)
         {
+            SendCommand(String.Format("CM"));
             SendCommand(String.Format("PW {0}", power));
         }
 

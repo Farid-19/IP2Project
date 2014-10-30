@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -26,7 +27,12 @@ namespace RH_APP.Controller
 
         public delegate void TrainingFinished();
 
-        public TrainingFinished OnTrainingFinished;
+        public delegate void TrainingStateChanged(string state);
+
+        public event TrainingStateChanged OnTrainingStateChanged;
+
+        public event TrainingFinished OnTrainingFinished;
+
 
         public enum TestPhases
         {
@@ -34,6 +40,7 @@ namespace RH_APP.Controller
         }
 
         public TestPhases state;
+        public TestPhases? oldState;
 
         public ÄstrandTestController(RH_Controller rh, User s)
         {
@@ -66,19 +73,20 @@ namespace RH_APP.Controller
 
             if(m == null)
                 m = controller.LatestMeasurement;
-            TimeSpan time = TimeSpan.ParseExact(m.TIME, "g", CultureInfo.CurrentCulture);
+            //TimeSpan time = TimeSpan.ParseExact(m.TIME, "g", CultureInfo.CurrentCulture);
+            TimeSpan time = TimeSpan.ParseExact(m.TIME, @"mm\:ss", CultureInfo.CurrentCulture);
 
             switch (state)
             {
                 case TestPhases.WarmingUp:
-                    if (time.Minutes > 2)
+                    //if (time.Minutes > 2)
+                    if (time.Seconds > 10)
                         state = TestPhases.Training;
 
                     break;
 
                     case TestPhases.Training:
-                    if (time.Seconds == 0)
-                    {
+
                         if(time.Minutes == 8)
                             state = TestPhases.CoolingDown;
                         else if (!timetoIncreasePower[time.Minutes])
@@ -86,9 +94,10 @@ namespace RH_APP.Controller
                             timetoIncreasePower[time.Minutes] = true;
                             power += client.Gender == "f" ? 10 : 15;
                             controller.SetPower(power);
+                            Console.WriteLine("Increased power to " + power);
                         }
 
-                    }
+                    
                     break;
 
                     case TestPhases.CoolingDown:
@@ -109,8 +118,13 @@ namespace RH_APP.Controller
                     break;
 
             }
-            
-            
+
+
+            if (oldState == null || oldState != state)
+            {
+                oldState = state;
+                OnTrainingStateChanged(state.ToString());
+            }
         }
 
     }

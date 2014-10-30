@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.startTrainingButton = new System.Windows.Forms.Button();
             this._graph = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -57,6 +57,7 @@
             this._sendButton = new System.Windows.Forms.Button();
             this.broadcastCheckbox = new System.Windows.Forms.CheckBox();
             this._quitButton = new System.Windows.Forms.Button();
+            this.trainingStateLabel = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._graph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -94,6 +95,7 @@
             this.tableLayoutPanel1.Controls.Add(this._sendButton, 4, 8);
             this.tableLayoutPanel1.Controls.Add(this.broadcastCheckbox, 4, 9);
             this.tableLayoutPanel1.Controls.Add(this._quitButton, 2, 7);
+            this.tableLayoutPanel1.Controls.Add(this.trainingStateLabel, 0, 8);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -124,27 +126,27 @@
             // 
             // _graph
             // 
-            chartArea1.Name = "ChartArea1";
-            this._graph.ChartAreas.Add(chartArea1);
+            chartArea2.Name = "ChartArea1";
+            this._graph.ChartAreas.Add(chartArea2);
             this.tableLayoutPanel1.SetColumnSpan(this._graph, 5);
             this._graph.Cursor = System.Windows.Forms.Cursors.Arrow;
             this._graph.Dock = System.Windows.Forms.DockStyle.Fill;
             this._graph.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            legend1.Name = "Legend1";
-            this._graph.Legends.Add(legend1);
+            legend2.Name = "Legend1";
+            this._graph.Legends.Add(legend2);
             this._graph.Location = new System.Drawing.Point(3, 333);
             this._graph.Name = "_graph";
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.Legend = "Legend1";
-            series1.Name = "SPEED";
-            series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series2.Legend = "Legend1";
-            series2.Name = "PULSE";
-            this._graph.Series.Add(series1);
-            this._graph.Series.Add(series2);
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series3.Legend = "Legend1";
+            series3.Name = "SPEED";
+            series3.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series4.Legend = "Legend1";
+            series4.Name = "PULSE";
+            this._graph.Series.Add(series3);
+            this._graph.Series.Add(series4);
             this._graph.Size = new System.Drawing.Size(1002, 325);
             this._graph.TabIndex = 42;
             // 
@@ -342,6 +344,7 @@
             0,
             0,
             0});
+            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
             this.numericUpDown1.Click += new System.EventHandler(this.numericUpDown1_Click);
             // 
             // _chatLogBox
@@ -395,6 +398,15 @@
             this._quitButton.UseVisualStyleBackColor = true;
             this._quitButton.Click += new System.EventHandler(this._quitButton_Click);
             // 
+            // trainingStateLabel
+            // 
+            this.trainingStateLabel.AutoSize = true;
+            this.trainingStateLabel.Location = new System.Drawing.Point(3, 264);
+            this.trainingStateLabel.Name = "trainingStateLabel";
+            this.trainingStateLabel.Size = new System.Drawing.Size(56, 13);
+            this.trainingStateLabel.TabIndex = 44;
+            this.trainingStateLabel.Text = "stateLabel";
+            // 
             // TrainingScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -439,5 +451,6 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart _graph;
         private System.Windows.Forms.Button startTrainingButton;
         private System.Windows.Forms.Button _quitButton;
+        private System.Windows.Forms.Label trainingStateLabel;
     }
 }
