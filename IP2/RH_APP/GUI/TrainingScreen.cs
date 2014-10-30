@@ -75,12 +75,24 @@ namespace RH_APP.GUI
 
                 testController = new ÄstrandTestController(_controller, Settings.GetInstance().CurrentUser);
                 //testController.OnTrainingFinished 
-                testController.OnTrainingStateChanged += changeStateLabel; 
+                testController.OnTrainingStateChanged += changeStateLabel;
+                testController.OnRPMToHigh += rpmtolow;
+                testController.OnRPMToLow += rpmtohigh;
                 testController.Start();
             }
             startTrainingButton.Enabled = false;
             _quitButton.Enabled = true;
 
+        }
+
+        private void rpmtolow()
+        {
+            statusLabel.Text = "Your RPM is too low. Please pedal faster. Try keeping your RPM between 60 and 70. ";
+        }
+
+        private void rpmtohigh()
+        {
+            statusLabel.Text = "Your RPM is too High. Please pedal slower. Try keeping your RPM between 60 and 70. ";
         }
 
         private void _quitButton_Click(object sender, EventArgs e)

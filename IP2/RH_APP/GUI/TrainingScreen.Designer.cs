@@ -57,8 +57,8 @@
             this._sendButton = new System.Windows.Forms.Button();
             this.broadcastCheckbox = new System.Windows.Forms.CheckBox();
             this._quitButton = new System.Windows.Forms.Button();
-            this.trainingStateLabel = new System.Windows.Forms.Label();
             this.statusLabel = new System.Windows.Forms.Label();
+            this.trainingStateLabel = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
@@ -404,15 +404,6 @@
             this._quitButton.UseVisualStyleBackColor = true;
             this._quitButton.Click += new System.EventHandler(this._quitButton_Click);
             // 
-            // trainingStateLabel
-            // 
-            this.trainingStateLabel.AutoSize = true;
-            this.trainingStateLabel.Location = new System.Drawing.Point(154, 264);
-            this.trainingStateLabel.Name = "trainingStateLabel";
-            this.trainingStateLabel.Size = new System.Drawing.Size(56, 13);
-            this.trainingStateLabel.TabIndex = 44;
-            this.trainingStateLabel.Text = "stateLabel";
-            // 
             // statusLabel
             // 
             this.statusLabel.AutoSize = true;
@@ -421,6 +412,15 @@
             this.statusLabel.Size = new System.Drawing.Size(61, 13);
             this.statusLabel.TabIndex = 45;
             this.statusLabel.Text = "statusLabel";
+            // 
+            // trainingStateLabel
+            // 
+            this.trainingStateLabel.AutoSize = true;
+            this.trainingStateLabel.Location = new System.Drawing.Point(154, 264);
+            this.trainingStateLabel.Name = "trainingStateLabel";
+            this.trainingStateLabel.Size = new System.Drawing.Size(56, 13);
+            this.trainingStateLabel.TabIndex = 44;
+            this.trainingStateLabel.Text = "stateLabel";
             // 
             // label4
             // 
