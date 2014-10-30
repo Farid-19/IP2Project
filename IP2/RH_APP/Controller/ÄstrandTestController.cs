@@ -20,7 +20,9 @@ namespace RH_APP.Controller
         private bool started = false;
 
         private int maxPulse;
-
+        private bool rpmOk = false;
+        private bool rpmToLow = true;
+        private bool rpmtoHigh = false;
 
         // timeToIncreasePower[x] = y
         // x = minuut
@@ -36,9 +38,13 @@ namespace RH_APP.Controller
 
         public delegate void RPMToHigh();
 
+        public delegate void RPMIsOK();
+
         public event RPMToHigh OnRPMToHigh;
 
         public event RPMtoLow OnRPMToLow;
+
+        public event RPMIsOK OnRPMIsOK;
 
         public event TrainingStateChanged OnTrainingStateChanged;
 
@@ -48,7 +54,7 @@ namespace RH_APP.Controller
 
         public enum TestPhases
         {
-            WarmingUp, Training, CoolingDown, EndTraining, End
+            WarmingUp, WarmingPulse, SteadyState, Training, CoolingDown, EndTraining, End
         }
 
         public TestPhases state;
@@ -146,6 +152,24 @@ namespace RH_APP.Controller
             {
                 oldState = state;
                 OnTrainingStateChanged(state.ToString());
+            }
+
+            if (!rpmToLow && m.RPM < 60)
+            {
+                OnRPMToLow();
+                rpmToLow = true;
+                rpmOk = false;
+            }
+            else if (rpmtoHigh && m.RPM > 70)
+            {
+                OnRPMToHigh();
+                rpmtoHigh = true;
+                rpmOk = false;
+            }
+            else if(!rpmOk)
+            {
+                OnRPMIsOK();
+                rpmOk = true;
             }
         }
 
