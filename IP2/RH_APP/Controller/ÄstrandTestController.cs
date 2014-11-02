@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 using Mallaca;
 using Mallaca.Usertypes;
 
@@ -24,11 +25,12 @@ namespace RH_APP.Controller
         private bool rpmToLow = true;
         private bool rpmtoHigh = false;
 
-        // timeToIncreasePower[x] = y
+        // timeToIncreasePower[x][h] = y
         // x = minuut
+        // h = seconden / 10
         // y = true / false 
-        // y geeft aan of de power al is toegenomen in minuut x.
-        private readonly bool[] timetoIncreasePower = new bool[900];
+        // y geeft aan of de power al is toegenomen in minuut x:seconden/10 h .
+        private readonly bool[][] timetoIncreasePower = new bool[900][];
 
         public delegate void TrainingFinished();
 
@@ -51,6 +53,7 @@ namespace RH_APP.Controller
         public event TrainingFinished OnTrainingFinished;
 
 
+        private int beatrateHigherThan130;
 
         public enum TestPhases
         {
@@ -60,13 +63,21 @@ namespace RH_APP.Controller
         public TestPhases state;
         public TestPhases? oldState;
 
+        //steady state vars
+        private TimeSpan steadyStateEndTime;
+        private List<int> steadyStateHartRateList = new List<int>();
+        private double steadyStateHartRateAverage = -1;
+
         public ÄstrandTestController(RH_Controller rh, User s)
         {
             client = s;
             controller = rh;
 
             for (int i = 0; i < timetoIncreasePower.Length; i++)
-                timetoIncreasePower[i] = false;
+                for (int j = 0; j < timetoIncreasePower.Length; j++)
+                    timetoIncreasePower[i][j] = false;
+                
+                
         }
 
         public void Start()
@@ -113,25 +124,51 @@ namespace RH_APP.Controller
 
                     break;
 
-                    case TestPhases.Training:
+                    case TestPhases.WarmingPulse:
 
-                        if(time.Minutes == 8)
-                            state = TestPhases.CoolingDown;
-                        else if (!timetoIncreasePower[time.Minutes])
+                        if (m.PULSE <= 130 &&
+                            !timetoIncreasePower[time.Minutes][time.Seconds / 10]) 
                         {
-                            timetoIncreasePower[time.Minutes] = true;
-                            power += client.Gender == "f" ? 10 : 15;
+                            timetoIncreasePower[time.Minutes][time.Seconds / 10] = true;
+                            power += 10;
                             controller.SetPower(power);
                             Console.WriteLine("Increased power to " + power);
+                        }
+                        else if (m.PULSE >= 130)
+                        {
+                            beatrateHigherThan130 = time.Add(new TimeSpan(0, 0, 0, 10)).Seconds;
+
+                            if (time.Seconds == beatrateHigherThan130)
+                            {
+                                //TODO measure if hartrate is consistent
+                                steadyStateEndTime = time.Add(new TimeSpan(0,0,2,0));
+                                state = TestPhases.SteadyState;
+                            }
+
                         }
 
                     
                     break;
 
+                case TestPhases.SteadyState:
+
+                    steadyStateHartRateList.Add(m.PULSE);
+
+                    if (steadyStateEndTime.Seconds == time.Seconds &&
+                        steadyStateEndTime.Minutes == time.Minutes)
+                    {
+                        double total = 0;
+                        steadyStateHartRateList.ForEach(x => total += x);
+                        steadyStateHartRateAverage = total / steadyStateHartRateList.Count;
+                        state = TestPhases.CoolingDown;
+                    }
+
+                    break;
+
                     case TestPhases.CoolingDown:
                     if (power != 25)
                     {
-                        power = 25;
+                        power -= 1;
                         controller.SetPower(power);
                     }
 
