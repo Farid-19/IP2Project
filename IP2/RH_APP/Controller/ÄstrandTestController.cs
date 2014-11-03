@@ -74,10 +74,13 @@ namespace RH_APP.Controller
             controller = rh;
 
             for (int i = 0; i < timetoIncreasePower.Length; i++)
+            {
+                timetoIncreasePower[i] = new bool[9];
                 for (int j = 0; j < timetoIncreasePower.Length; j++)
                     timetoIncreasePower[i][j] = false;
-                
-                
+            }
+
+
         }
 
         public void Start()
