@@ -1,4 +1,5 @@
-﻿using System.IO.Ports;
+﻿using System.Drawing;
+using System.IO.Ports;
 using System.Linq;
 using System.Threading;
 using Mallaca;
@@ -76,8 +77,9 @@ namespace RH_APP.GUI
                 testController = new ÄstrandTestController(_controller, Settings.GetInstance().CurrentUser);
                 //testController.OnTrainingFinished 
                 testController.OnTrainingStateChanged += changeStateLabel;
-                testController.OnRPMToHigh += rpmtolow;
-                testController.OnRPMToLow += rpmtohigh;
+                testController.OnRPMToHigh += rpmtohigh;
+                testController.OnRPMToLow += rpmtolow;
+                testController.OnRPMIsOK += rpmIsOk;
                 testController.Start();
             }
             startTrainingButton.Enabled = false;
@@ -87,12 +89,20 @@ namespace RH_APP.GUI
 
         private void rpmtolow()
         {
-            statusLabel.Text = "Your RPM is too low. Please pedal faster. Try keeping your RPM between 60 and 70. ";
+            statusLabel.Text = "Your RPM should be between 60 and 70. Please pedal faster.";
+            statusLabel.ForeColor = Color.Red;
         }
 
         private void rpmtohigh()
         {
-            statusLabel.Text = "Your RPM is too High. Please pedal slower. Try keeping your RPM between 60 and 70. ";
+            statusLabel.Text = "Your RPM should be between 60 and 70. Please pedal slower.";
+            statusLabel.ForeColor = Color.Red;
+        }
+
+        private void rpmIsOk()
+        {
+            statusLabel.Text = "OK! Keep going!";
+            statusLabel.ForeColor = Color.Lime;
         }
 
         private void _quitButton_Click(object sender, EventArgs e)
@@ -358,6 +368,8 @@ namespace RH_APP.GUI
             numericUpDown1.Refresh();
 
             updateGraph(eventargs);
+
+            
 
             //if (!_writeToFile) return;
             //var protoLine = _controller.LatestMeasurement.toProtocolString();

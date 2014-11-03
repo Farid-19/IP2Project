@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.startTrainingButton = new System.Windows.Forms.Button();
             this._graph = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -98,10 +98,10 @@
             this.tableLayoutPanel1.Controls.Add(this._sendButton, 4, 8);
             this.tableLayoutPanel1.Controls.Add(this.broadcastCheckbox, 4, 9);
             this.tableLayoutPanel1.Controls.Add(this._quitButton, 2, 7);
-            this.tableLayoutPanel1.Controls.Add(this.statusLabel, 1, 9);
             this.tableLayoutPanel1.Controls.Add(this.trainingStateLabel, 1, 8);
             this.tableLayoutPanel1.Controls.Add(this.label4, 0, 8);
             this.tableLayoutPanel1.Controls.Add(this.label5, 0, 9);
+            this.tableLayoutPanel1.Controls.Add(this.statusLabel, 1, 9);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -132,27 +132,27 @@
             // 
             // _graph
             // 
-            chartArea1.Name = "ChartArea1";
-            this._graph.ChartAreas.Add(chartArea1);
+            chartArea4.Name = "ChartArea1";
+            this._graph.ChartAreas.Add(chartArea4);
             this.tableLayoutPanel1.SetColumnSpan(this._graph, 5);
             this._graph.Cursor = System.Windows.Forms.Cursors.Arrow;
             this._graph.Dock = System.Windows.Forms.DockStyle.Fill;
             this._graph.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            legend1.Name = "Legend1";
-            this._graph.Legends.Add(legend1);
+            legend4.Name = "Legend1";
+            this._graph.Legends.Add(legend4);
             this._graph.Location = new System.Drawing.Point(3, 333);
             this._graph.Name = "_graph";
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.Legend = "Legend1";
-            series1.Name = "SPEED";
-            series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series2.Legend = "Legend1";
-            series2.Name = "PULSE";
-            this._graph.Series.Add(series1);
-            this._graph.Series.Add(series2);
+            series7.ChartArea = "ChartArea1";
+            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series7.Legend = "Legend1";
+            series7.Name = "SPEED";
+            series7.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
+            series8.ChartArea = "ChartArea1";
+            series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series8.Legend = "Legend1";
+            series8.Name = "PULSE";
+            this._graph.Series.Add(series7);
+            this._graph.Series.Add(series8);
             this._graph.Size = new System.Drawing.Size(1002, 325);
             this._graph.TabIndex = 42;
             // 
@@ -407,36 +407,42 @@
             // statusLabel
             // 
             this.statusLabel.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.statusLabel, 3);
+            this.statusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.statusLabel.Location = new System.Drawing.Point(154, 297);
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(61, 13);
+            this.statusLabel.Size = new System.Drawing.Size(113, 22);
             this.statusLabel.TabIndex = 45;
             this.statusLabel.Text = "statusLabel";
             // 
             // trainingStateLabel
             // 
             this.trainingStateLabel.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.trainingStateLabel, 2);
+            this.trainingStateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.trainingStateLabel.Location = new System.Drawing.Point(154, 264);
             this.trainingStateLabel.Name = "trainingStateLabel";
-            this.trainingStateLabel.Size = new System.Drawing.Size(56, 13);
+            this.trainingStateLabel.Size = new System.Drawing.Size(103, 22);
             this.trainingStateLabel.TabIndex = 44;
             this.trainingStateLabel.Text = "stateLabel";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.Location = new System.Drawing.Point(3, 264);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(74, 13);
+            this.label4.Size = new System.Drawing.Size(125, 22);
             this.label4.TabIndex = 46;
             this.label4.Text = "Training state:";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(3, 297);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(37, 13);
+            this.label5.Size = new System.Drawing.Size(61, 22);
             this.label5.TabIndex = 47;
             this.label5.Text = "Status";
             // 
