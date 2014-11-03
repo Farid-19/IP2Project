@@ -121,70 +121,24 @@ namespace RH_APP.Controller
             switch (state)
             {
                 case TestPhases.WarmingUp:
-                    //if (time.Minutes > 2)
-                    if (time.Seconds > 10)
-                        state = TestPhases.Training;
-
+                    WarmingUp(time);
                     break;
 
-                    case TestPhases.WarmingPulse:
-
-                        if (m.PULSE <= 130 &&
-                            !timetoIncreasePower[time.Minutes][time.Seconds / 10]) 
-                        {
-                            timetoIncreasePower[time.Minutes][time.Seconds / 10] = true;
-                            power += 10;
-                            controller.SetPower(power);
-                            Console.WriteLine("Increased power to " + power);
-                        }
-                        else if (m.PULSE >= 130)
-                        {
-                            beatrateHigherThan130 = time.Add(new TimeSpan(0, 0, 0, 10)).Seconds;
-
-                            if (time.Seconds == beatrateHigherThan130)
-                            {
-                                //TODO measure if hartrate is consistent
-                                steadyStateEndTime = time.Add(new TimeSpan(0,0,2,0));
-                                state = TestPhases.SteadyState;
-                            }
-
-                        }
-
-                    
+                case TestPhases.WarmingPulse:
+                    WarmingPulse(m, time);
                     break;
 
                 case TestPhases.SteadyState:
-
-                    steadyStateHartRateList.Add(m.PULSE);
-
-                    if (steadyStateEndTime.Seconds == time.Seconds &&
-                        steadyStateEndTime.Minutes == time.Minutes)
-                    {
-                        double total = 0;
-                        steadyStateHartRateList.ForEach(x => total += x);
-                        steadyStateHartRateAverage = total / steadyStateHartRateList.Count;
-                        state = TestPhases.CoolingDown;
-                    }
-
+                    SteadyState(m, time);
                     break;
 
-                    case TestPhases.CoolingDown:
-                    if (power != 25)
-                    {
-                        power -= 1;
-                        controller.SetPower(power);
-                    }
-
+                case TestPhases.CoolingDown:
+                    CoolingDown();
                     break;
 
                 case TestPhases.EndTraining:
-                    controller.Reset();
-                    if (OnTrainingFinished != null)
-                        OnTrainingFinished();
-
-                    state = TestPhases.End;
+                    EndTraining();
                     break;
-
             }
 
 
@@ -226,5 +180,74 @@ namespace RH_APP.Controller
 
             return age;
         }
+
+
+        private void WarmingUp(TimeSpan time)
+        {
+            //TODO: if (time.Minutes > 2)
+            if (time.Seconds > 10)
+            {
+
+                state = TestPhases.Training;
+            }
+        }
+
+        private void WarmingPulse(Measurement m, TimeSpan time)
+        {
+            if (m.PULSE <= 130 &&
+                           !timetoIncreasePower[time.Minutes][time.Seconds / 10])
+            {
+                timetoIncreasePower[time.Minutes][time.Seconds / 10] = true;
+                power += 10;
+                controller.SetPower(power);
+                Console.WriteLine("Increased power to " + power);
+            }
+            else if (m.PULSE >= 130)
+            {
+                beatrateHigherThan130 = time.Add(new TimeSpan(0, 0, 0, 10)).Seconds;
+
+                if (time.Seconds == beatrateHigherThan130)
+                {
+                    //TODO measure if hartrate is consistent
+                    steadyStateEndTime = time.Add(new TimeSpan(0, 0, 2, 0));
+                    state = TestPhases.SteadyState;
+                }
+
+            }
+        }
+
+
+        private void SteadyState(Measurement m, TimeSpan time)
+        {
+            steadyStateHartRateList.Add(m.PULSE);
+
+            if (steadyStateEndTime.Seconds == time.Seconds &&
+                steadyStateEndTime.Minutes == time.Minutes)
+            {
+                double total = 0;
+                steadyStateHartRateList.ForEach(x => total += x);
+                steadyStateHartRateAverage = total / steadyStateHartRateList.Count;
+                state = TestPhases.CoolingDown;
+            }
+        }
+
+        private void CoolingDown()
+        {
+            if (power != 25)
+            {
+                power -= 1;
+                controller.SetPower(power);
+            }
+        }
+
+        private void EndTraining()
+        {
+            controller.Reset();
+            if (OnTrainingFinished != null)
+                OnTrainingFinished();
+
+            state = TestPhases.End;
+        }
+
     }
 }
