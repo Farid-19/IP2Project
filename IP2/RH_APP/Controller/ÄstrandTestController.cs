@@ -25,12 +25,7 @@ namespace RH_APP.Controller
         private bool rpmToLow = true;
         private bool rpmtoHigh = false;
 
-        // timeToIncreasePower[x][h] = y
-        // x = minuut
-        // h = seconden / 10
-        // y = true / false 
-        // y geeft aan of de power al is toegenomen in minuut x:seconden/10 h .
-        private readonly bool[][] timetoIncreasePower = new bool[900][];
+
 
         public delegate void TrainingFinished();
 
@@ -53,7 +48,6 @@ namespace RH_APP.Controller
         public event TrainingFinished OnTrainingFinished;
 
 
-        private int beatrateHigherThan130;
 
         public enum TestPhases
         {
@@ -63,10 +57,7 @@ namespace RH_APP.Controller
         public TestPhases state;
         public TestPhases? oldState;
 
-        //steady state vars
-        private TimeSpan steadyStateEndTime;
-        private List<int> steadyStateHartRateList = new List<int>();
-        private double steadyStateHartRateAverage = -1;
+
 
         public ÄstrandTestController(RH_Controller rh, User s)
         {
@@ -75,9 +66,7 @@ namespace RH_APP.Controller
 
             for (int i = 0; i < timetoIncreasePower.Length; i++)
             {
-                timetoIncreasePower[i] = new bool[9];
-                for (int j = 0; j < timetoIncreasePower.Length; j++)
-                    timetoIncreasePower[i][j] = false;
+                timetoIncreasePower[i] = false;
             }
 
 
@@ -187,35 +176,53 @@ namespace RH_APP.Controller
             //TODO: if (time.Minutes > 2)
             if (time.Seconds > 10)
             {
-
                 state = TestPhases.Training;
             }
         }
 
+        // timeToIncreasePower[x][h] = y
+        // x = minuut
+        // h = seconden / 10
+        // y = true / false 
+        // y geeft aan of de power al is toegenomen in minuut x:seconden/10 h .
+        private readonly bool[] timetoIncreasePower = new bool[900];
+        private int beatrateHigherThan150;
+
         private void WarmingPulse(Measurement m, TimeSpan time)
         {
-            if (m.PULSE <= 130 &&
-                           !timetoIncreasePower[time.Minutes][time.Seconds / 10])
+            if (m.PULSE < 150 && beatrateHigherThan150 != -1)
             {
-                timetoIncreasePower[time.Minutes][time.Seconds / 10] = true;
-                power += 10;
+                beatrateHigherThan150 = -1;
+            }
+            if (m.PULSE < 150 &&
+                !timetoIncreasePower[time.Minutes])
+            {
+                timetoIncreasePower[time.Minutes] = true;
+                power += 25;
                 controller.SetPower(power);
                 Console.WriteLine("Increased power to " + power);
+
             }
-            else if (m.PULSE >= 130)
+            else if (m.PULSE >= 150 && beatrateHigherThan150 == -1)
             {
-                beatrateHigherThan130 = time.Add(new TimeSpan(0, 0, 0, 10)).Seconds;
-
-                if (time.Seconds == beatrateHigherThan130)
-                {
-                    //TODO measure if hartrate is consistent
-                    steadyStateEndTime = time.Add(new TimeSpan(0, 0, 2, 0));
-                    state = TestPhases.SteadyState;
-                }
-
+                //current time +10 seconds
+                beatrateHigherThan150 = time.Add(new TimeSpan(0, 0, 0, 10)).Seconds;
             }
-        }
+            else if (time.Seconds == beatrateHigherThan150)
+            {
+                //current time +2 minutes
+                steadyStateEndTime = time.Add(new TimeSpan(0, 0, 2, 0));
+                state = TestPhases.SteadyState;
+            }
 
+            
+        }
+    
+
+        //steady state vars
+        private TimeSpan steadyStateEndTime;
+        private List<int> steadyStateHartRateList = new List<int>();
+        private double steadyStateHartRateAverage = -1;
 
         private void SteadyState(Measurement m, TimeSpan time)
         {
