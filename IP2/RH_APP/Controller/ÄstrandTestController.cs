@@ -25,6 +25,7 @@ namespace RH_APP.Controller
         private bool rpmToLow = true;
         private bool rpmtoHigh = false;
 
+        public int HeartRate { get; set; }
 
 
         public delegate void TrainingFinished();
@@ -79,6 +80,7 @@ namespace RH_APP.Controller
             state = TestPhases.WarmingUp;
             power = client.Gender == "f" ? 25 : 50;
 
+            controller.SendCommand("CM");
             controller.SetPower(power);
 
 
@@ -104,6 +106,11 @@ namespace RH_APP.Controller
 
             if(m == null)
                 m = controller.LatestMeasurement;
+
+            if (m.PULSE == 0)
+            {
+                m.PULSE = HeartRate;
+            }
             //TimeSpan time = TimeSpan.ParseExact(m.TIME, "g", CultureInfo.CurrentCulture);
             TimeSpan time = TimeSpan.ParseExact(m.TIME, @"mm\:ss", CultureInfo.CurrentCulture);
 
@@ -122,7 +129,7 @@ namespace RH_APP.Controller
                     break;
 
                 case TestPhases.CoolingDown:
-                    CoolingDown();
+                    CoolingDown(time);
                     break;
 
                 case TestPhases.EndTraining:
@@ -137,19 +144,15 @@ namespace RH_APP.Controller
                 OnTrainingStateChanged(state.ToString());
             }
 
-            if (!rpmToLow && m.RPM < 60)
+            if (m.RPM < 60)
             {
                 OnRPMToLow();
-                rpmToLow = true;
-                rpmOk = false;
             }
-            else if (rpmtoHigh && m.RPM > 70)
+            else if (m.RPM > 70)
             {
                 OnRPMToHigh();
-                rpmtoHigh = true;
-                rpmOk = false;
             }
-            else if(!rpmOk)
+            else
             {
                 OnRPMIsOK();
                 rpmOk = true;
@@ -173,29 +176,30 @@ namespace RH_APP.Controller
 
         private void WarmingUp(TimeSpan time)
         {
-            //TODO: if (time.Minutes > 2)
-            if (time.Seconds > 10)
+            if (time.Minutes >= 2)
+            //if (time.Seconds > 10)
             {
-                state = TestPhases.Training;
+                state = TestPhases.WarmingPulse;
             }
         }
 
-        // timeToIncreasePower[x][h] = y
+        // timeToIncreasePower[x] = y
         // x = minuut
-        // h = seconden / 10
         // y = true / false 
-        // y geeft aan of de power al is toegenomen in minuut x:seconden/10 h .
+        // y geeft aan of de power al is toegenomen in minuut x.
         private readonly bool[] timetoIncreasePower = new bool[900];
-        private int beatrateHigherThan150;
-
+        private int beatrateHigherThan150 = -1;
+        private const int minBPM = 120;
         private void WarmingPulse(Measurement m, TimeSpan time)
         {
-            if (m.PULSE < 150 && beatrateHigherThan150 != -1)
+            bool isNewMinute = time.Seconds == 0;
+            bool bpmEndSecIsSet = beatrateHigherThan150 != -1;
+
+            if (m.PULSE < minBPM && bpmEndSecIsSet)
             {
                 beatrateHigherThan150 = -1;
             }
-            if (m.PULSE < 150 &&
-                !timetoIncreasePower[time.Minutes])
+            if (m.PULSE < minBPM && !timetoIncreasePower[time.Minutes])//&& isNewMinute)
             {
                 timetoIncreasePower[time.Minutes] = true;
                 power += 25;
@@ -203,16 +207,17 @@ namespace RH_APP.Controller
                 Console.WriteLine("Increased power to " + power);
 
             }
-            else if (m.PULSE >= 150 && beatrateHigherThan150 == -1)
+            else if (m.PULSE >= minBPM && !bpmEndSecIsSet)
             {
                 //current time +10 seconds
                 beatrateHigherThan150 = time.Add(new TimeSpan(0, 0, 0, 10)).Seconds;
             }
-            else if (time.Seconds == beatrateHigherThan150)
+            else if (m.PULSE >= minBPM && time.Seconds == beatrateHigherThan150)
             {
                 //current time +2 minutes
                 steadyStateEndTime = time.Add(new TimeSpan(0, 0, 2, 0));
                 state = TestPhases.SteadyState;
+                Console.WriteLine("pulse was higher than " + minBPM + " for 10 seconds. Switching state to SteadyState.");
             }
 
             
@@ -222,7 +227,7 @@ namespace RH_APP.Controller
         //steady state vars
         private TimeSpan steadyStateEndTime;
         private List<int> steadyStateHartRateList = new List<int>();
-        private double steadyStateHartRateAverage = -1;
+        public double steadyStateHartRateAverage { get; private set; }
 
         private void SteadyState(Measurement m, TimeSpan time)
         {
@@ -235,16 +240,24 @@ namespace RH_APP.Controller
                 steadyStateHartRateList.ForEach(x => total += x);
                 steadyStateHartRateAverage = total / steadyStateHartRateList.Count;
                 state = TestPhases.CoolingDown;
+                coolingDownTime = time.Add(new TimeSpan(0, 0, 1, 0));
+                Console.WriteLine("Ending steady state.");
+                Console.WriteLine("Average steady bpm: {0}.", steadyStateHartRateAverage);
+                Console.WriteLine("Switching state to end (cooling down) state.");
             }
         }
 
-        private void CoolingDown()
+        private TimeSpan coolingDownTime;
+        private void CoolingDown(TimeSpan time)
         {
             if (power != 25)
             {
                 power -= 1;
                 controller.SetPower(power);
             }
+
+            if(coolingDownTime.Equals(time))
+                state = TestPhases.EndTraining;
         }
 
         private void EndTraining()

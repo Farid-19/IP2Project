@@ -21,6 +21,8 @@ namespace RH_APP.Controller
         private readonly BackgroundWorker _bw = new BackgroundWorker();
         private readonly List<Measurement> _data = new List<Measurement>();
         private readonly Queue<String> _queue = new Queue<string>();
+        private int _pulse;
+        private bool ignoreNext = false;
 
         private DateTime _lastSuccesfullRead;
         public Measurement LatestMeasurement
@@ -59,8 +61,13 @@ namespace RH_APP.Controller
 
         public void SetPower(int power)
         {
-            SendCommand(String.Format("CM"));
+            //SendCommand(String.Format("CM"));
             SendCommand(String.Format("PW {0}", power));
+        }
+
+        public void SetPulse(int pulse)
+        {
+            _pulse = pulse;
         }
 
         public void Reset()
@@ -138,9 +145,10 @@ namespace RH_APP.Controller
             //System.Threading.Thread.Sleep(500);
             while (_queue.Count > 0)
             {
+                Thread.Sleep(200);
                 var cmd = _queue.Dequeue();
                 _bike.SendData(cmd);
-                Thread.Sleep(50);
+                
             }
 
                 var m = _bike.RecieveData();
@@ -159,6 +167,10 @@ namespace RH_APP.Controller
                     var timeSpan = DateTime.Now.Subtract(_lastSuccesfullRead);
                     if (timeSpan.Milliseconds > _readOffsetMillis)
                     {
+                        if (result.PULSE == 0)
+                        {
+                            result.PULSE = _pulse;
+                        }
                         _lastSuccesfullRead = DateTime.Now;
                         _data.Add(result);
                         OnUpdatedList(new MeasurementEventArgs(result));

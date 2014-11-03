@@ -285,7 +285,7 @@ namespace RH_Server.Server
                     )
                 {
                     measurementsL.Add(m);
-                    Console.WriteLine(Resources.ClientHandler_HandlePushPacked_Recieved, measurements.FirstOrDefault());
+                    //Console.WriteLine(Resources.ClientHandler_HandlePushPacked_Recieved, measurements.FirstOrDefault());
                 }
 
                 _database.SaveMeasurements(measurementsL, currentSession, id);
@@ -310,7 +310,7 @@ namespace RH_Server.Server
 
                 foreach (var handler in handlers)
                 {
-                    Console.WriteLine("Notified " + handler.currentUser.Fullname);
+                    //Console.WriteLine("Notified " + handler.currentUser.Fullname);
                     var returnJson = new DataFromClientPacket<Measurement>(mList, "measurements", currentUser.NonNullId);
                     //new PullResponsePacket<Measurement>(mList, "measurements");
                     handler.Send(returnJson);
@@ -446,7 +446,7 @@ namespace RH_Server.Server
             var response = new PullResponsePacket<Measurement>(measurements,"measurements");
 
             //Send the result back to the specialist.
-            Console.WriteLine(response.ToString());
+            //Console.WriteLine(response.ToString());
             Send(response.ToString());
         }
 

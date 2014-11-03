@@ -75,7 +75,8 @@ namespace RH_APP.GUI
                 _controller.UpdatedList += UpdateGUI;
 
                 testController = new ÄstrandTestController(_controller, Settings.GetInstance().CurrentUser);
-                //testController.OnTrainingFinished 
+                testController.OnTrainingFinished += trainingFinished;
+
                 testController.OnTrainingStateChanged += changeStateLabel;
                 testController.OnRPMToHigh += rpmtohigh;
                 testController.OnRPMToLow += rpmtolow;
@@ -85,6 +86,17 @@ namespace RH_APP.GUI
             startTrainingButton.Enabled = false;
             _quitButton.Enabled = true;
 
+        }
+
+        private void trainingFinished()
+        {
+            testController.OnTrainingStateChanged -= changeStateLabel;
+            testController.OnRPMToHigh -= rpmtohigh;
+            testController.OnRPMToLow -= rpmtolow;
+            testController.OnRPMIsOK -= rpmIsOk;
+            statusLabel.Text = "Training Finished! You may now leave the bike!";
+            statusLabel.ForeColor = Color.Lime;
+            statusLabel.BackColor = Color.Red; 
         }
 
         private void rpmtolow()
@@ -117,7 +129,7 @@ namespace RH_APP.GUI
             {
                 TCPController.Send(new NotifyPacket(NotifyPacket.Subject.StopTraining, client.NonNullId.ToString(),
                     Settings.GetInstance().authToken));
-                this.Hide();
+                this.Hide();            
 
                 DBConnect db = new DBConnect();
 
@@ -426,6 +438,12 @@ namespace RH_APP.GUI
         private void numericUpDown1_ValueChanged(object sender, EventArgs e)
         {
             
+        }
+
+        private void PulseBox_ValueChanged(object sender, EventArgs e)
+        {
+            _controller.SetPulse((int)PulseBox.Value);
+            testController.HeartRate = (int)PulseBox.Value;
         }
 
     }
