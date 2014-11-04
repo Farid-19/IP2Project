@@ -24,7 +24,7 @@ namespace Mallaca
 
         public DBConnect()
         {
-            initialize("deb58589n5_a5", "paullindelauf", "s121.webhostingserver.nl", "deb58589n5_healthcare");
+            initialize("root", "", "localhost", "deb58589n5_healthcare");
         }
 
         public DBConnect(string username, string pass, string serverAdress, string dbname)

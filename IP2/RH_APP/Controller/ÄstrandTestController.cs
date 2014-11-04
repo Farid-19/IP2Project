@@ -216,7 +216,7 @@ namespace RH_APP.Controller
         // y geeft aan of de power al is toegenomen in minuut x.
         private readonly bool[] timetoIncreasePower = new bool[900];
         private int beatrateHigherThan150 = -1;
-        private const int minBPM = 130;
+        private const int minBPM = 120;
         private void WarmingPulse(Measurement m, TimeSpan time)
         {
             bool isNewMinute = time.Seconds == 0;
