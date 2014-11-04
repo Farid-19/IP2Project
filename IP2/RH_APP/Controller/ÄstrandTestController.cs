@@ -28,7 +28,7 @@ namespace RH_APP.Controller
         public int HeartRate { get; set; }
 
 
-        public delegate void TrainingFinished();
+        public delegate void TrainingFinished(double steadyStateAverage);
 
         public delegate void TrainingStateChanged(string state);
 
@@ -52,7 +52,7 @@ namespace RH_APP.Controller
 
         public enum TestPhases
         {
-            WarmingUp, WarmingPulse, SteadyState, Training, CoolingDown, EndTraining, End
+            WarmingUp, WarmingPulse, SteadyState, Training, CoolingDown, EndTraining, End, WaitUntilBPMIsSteady
         }
 
         public TestPhases state;
@@ -123,7 +123,10 @@ namespace RH_APP.Controller
                 case TestPhases.WarmingPulse:
                     WarmingPulse(m, time);
                     break;
+                    case TestPhases.WaitUntilBPMIsSteady:
 
+                    WaitUntilBPMIsSteady(m, time);
+                    break;
                 case TestPhases.SteadyState:
                     SteadyState(m, time);
                     break;
@@ -141,21 +144,45 @@ namespace RH_APP.Controller
             if (oldState == null || oldState != state)
             {
                 oldState = state;
-                OnTrainingStateChanged(state.ToString());
+                if(OnTrainingStateChanged != null)
+                    OnTrainingStateChanged(state.ToString());
             }
 
             if (m.RPM < 60)
             {
-                OnRPMToLow();
+                if(OnRPMToLow != null)
+                    OnRPMToLow();
             }
             else if (m.RPM > 70)
             {
-                OnRPMToHigh();
+                if(OnRPMToHigh != null)
+                    OnRPMToHigh();
             }
             else
             {
-                OnRPMIsOK();
+                if(OnRPMIsOK != null)
+                    OnRPMIsOK();
                 rpmOk = true;
+            }
+        }
+
+        private TimeSpan WaitUntilBPMIsSteadyEndTime ;
+        private int bpmAtStart;
+        private void WaitUntilBPMIsSteady(Measurement m, TimeSpan time)
+        {
+
+            //checkt of de hartslag voor 20 seconden niet meer of minder afwijkt dan 5 slagen per minuut
+            if (WaitUntilBPMIsSteadyEndTime.Seconds == 0 && WaitUntilBPMIsSteadyEndTime.Minutes == 0 ||
+                m.PULSE < bpmAtStart - 5 || m.PULSE > bpmAtStart + 5)
+            {
+                Console.WriteLine("Checking if the bpm stays more or less the same until {0}:{1}", WaitUntilBPMIsSteadyEndTime.Minutes, WaitUntilBPMIsSteadyEndTime.Seconds);
+                bpmAtStart = m.PULSE;
+                WaitUntilBPMIsSteadyEndTime = time.Add(new TimeSpan(0, 0, 0, 20));
+            }
+            else if(time.Equals(WaitUntilBPMIsSteadyEndTime) )
+            {
+                steadyStateEndTime = time.Add(new TimeSpan(0, 0, 2, 0));
+                state = TestPhases.SteadyState;
             }
         }
 
@@ -189,7 +216,7 @@ namespace RH_APP.Controller
         // y geeft aan of de power al is toegenomen in minuut x.
         private readonly bool[] timetoIncreasePower = new bool[900];
         private int beatrateHigherThan150 = -1;
-        private const int minBPM = 120;
+        private const int minBPM = 130;
         private void WarmingPulse(Measurement m, TimeSpan time)
         {
             bool isNewMinute = time.Seconds == 0;
@@ -215,8 +242,8 @@ namespace RH_APP.Controller
             else if (m.PULSE >= minBPM && time.Seconds == beatrateHigherThan150)
             {
                 //current time +2 minutes
-                steadyStateEndTime = time.Add(new TimeSpan(0, 0, 2, 0));
-                state = TestPhases.SteadyState;
+                
+                state = TestPhases.WaitUntilBPMIsSteady;
                 Console.WriteLine("pulse was higher than " + minBPM + " for 10 seconds. Switching state to SteadyState.");
             }
 
@@ -263,8 +290,9 @@ namespace RH_APP.Controller
         private void EndTraining()
         {
             controller.Reset();
+            controller.Stop();
             if (OnTrainingFinished != null)
-                OnTrainingFinished();
+                OnTrainingFinished(steadyStateHartRateAverage);
 
             state = TestPhases.End;
         }

@@ -88,13 +88,13 @@ namespace RH_APP.GUI
 
         }
 
-        private void trainingFinished()
+        private void trainingFinished(double averageBPM)
         {
             testController.OnTrainingStateChanged -= changeStateLabel;
             testController.OnRPMToHigh -= rpmtohigh;
             testController.OnRPMToLow -= rpmtolow;
             testController.OnRPMIsOK -= rpmIsOk;
-            statusLabel.Text = "Training Finished! You may now leave the bike!";
+            statusLabel.Text = "Training Finished! Average BPM: " + ((int)averageBPM);
             statusLabel.ForeColor = Color.Lime;
             statusLabel.BackColor = Color.Red; 
         }
