@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.startTrainingButton = new System.Windows.Forms.Button();
             this._graph = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -136,27 +136,27 @@
             // 
             // _graph
             // 
-            chartArea1.Name = "ChartArea1";
-            this._graph.ChartAreas.Add(chartArea1);
+            chartArea3.Name = "ChartArea1";
+            this._graph.ChartAreas.Add(chartArea3);
             this.tableLayoutPanel1.SetColumnSpan(this._graph, 5);
             this._graph.Cursor = System.Windows.Forms.Cursors.Arrow;
             this._graph.Dock = System.Windows.Forms.DockStyle.Fill;
             this._graph.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            legend1.Name = "Legend1";
-            this._graph.Legends.Add(legend1);
+            legend3.Name = "Legend1";
+            this._graph.Legends.Add(legend3);
             this._graph.Location = new System.Drawing.Point(3, 333);
             this._graph.Name = "_graph";
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.Legend = "Legend1";
-            series1.Name = "SPEED";
-            series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series2.Legend = "Legend1";
-            series2.Name = "PULSE";
-            this._graph.Series.Add(series1);
-            this._graph.Series.Add(series2);
+            series5.ChartArea = "ChartArea1";
+            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series5.Legend = "Legend1";
+            series5.Name = "SPEED";
+            series5.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
+            series6.ChartArea = "ChartArea1";
+            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series6.Legend = "Legend1";
+            series6.Name = "PULSE";
+            this._graph.Series.Add(series5);
+            this._graph.Series.Add(series6);
             this._graph.Size = new System.Drawing.Size(1002, 325);
             this._graph.TabIndex = 42;
             // 
@@ -377,6 +377,7 @@
             this._textBox.Name = "_textBox";
             this._textBox.Size = new System.Drawing.Size(397, 20);
             this._textBox.TabIndex = 39;
+            this._textBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this._textBox_KeyPress_1);
             // 
             // _sendButton
             // 

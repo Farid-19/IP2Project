@@ -52,7 +52,7 @@ namespace RH_APP.Controller
 
         public enum TestPhases
         {
-            WarmingUp, WarmingPulse, SteadyState, Training, CoolingDown, EndTraining, End, WaitUntilBPMIsSteady
+            WarmingUp, WarmingPulse, SteadyState, CoolingDown, EndTraining, End, WaitUntilBPMIsSteady
         }
 
         public TestPhases state;
@@ -216,7 +216,7 @@ namespace RH_APP.Controller
         // y geeft aan of de power al is toegenomen in minuut x.
         private readonly bool[] timetoIncreasePower = new bool[900];
         private int beatrateHigherThan150 = -1;
-        private const int minBPM = 120;
+        private const int minBPM = 130;
         private void WarmingPulse(Measurement m, TimeSpan time)
         {
             bool isNewMinute = time.Seconds == 0;
@@ -291,6 +291,25 @@ namespace RH_APP.Controller
         {
             controller.Reset();
             controller.Stop();
+            double z;
+            double q;
+            double r;
+            if (client.Gender == "f")
+            {
+                z = 0.00193;
+                q = 0.326;
+                r = 56.1;
+            }
+            else
+            {
+                q = 0.299;
+                z = 0.00212;
+                r = 48.5;
+            }
+
+            double vo2 = (z*power*6.12 + z)/(0.769*steadyStateHartRateAverage - r)*1000;
+            Console.WriteLine("Vo2 value: " + vo2);
+
             if (OnTrainingFinished != null)
                 OnTrainingFinished(steadyStateHartRateAverage);
 

@@ -94,7 +94,7 @@ namespace RH_APP.GUI
             testController.OnRPMToHigh -= rpmtohigh;
             testController.OnRPMToLow -= rpmtolow;
             testController.OnRPMIsOK -= rpmIsOk;
-            statusLabel.Text = "Training Finished! Average BPM: " + ((int)averageBPM);
+            statusLabel.Text = "Training Finished! Result: " + ((int)averageBPM);
             statusLabel.ForeColor = Color.Lime;
             statusLabel.BackColor = Color.Red; 
         }
@@ -444,6 +444,34 @@ namespace RH_APP.GUI
         {
             _controller.SetPulse((int)PulseBox.Value);
             testController.HeartRate = (int)PulseBox.Value;
+        }
+
+        private void _textBox_KeyPress_1(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char) 13)
+            {
+
+                if (String.IsNullOrWhiteSpace(_textBox.Text))
+                    return;
+                else
+                {
+
+                    String message = _textBox.Text;
+
+                    AddNewMessage(Settings.GetInstance().CurrentUser.Fullname, message);
+
+                    string destination;
+                    if (isSpecialist)
+                        destination = client.Username;
+                    else
+                        destination = "";
+
+                    JObject json = new ChatPacket(message, destination, Settings.GetInstance().authToken, broadcastCheckbox.Checked).ToJsonObject();
+                    TCPController.Send(json.ToString());
+                    _textBox.Text = "";
+                }
+
+            }
         }
 
     }
